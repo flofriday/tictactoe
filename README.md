@@ -1,4 +1,5 @@
 # rust tic-tac-toe
+![Screenshot](./img/screenshot.png)
 ## DISCLAMER
 I just started learning rust so the code should not be used as a example of 
 good practice. This is is my first rust project if you have any suggestions on 
@@ -16,4 +17,3 @@ Binaries will be provided in the future.
 * Make code feel more rust-like (Feels currently more like C)
 * Provide binaries
 * Maybe livedemo in webbrowser ?
-* Upload screenshots

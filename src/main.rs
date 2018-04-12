@@ -36,7 +36,7 @@ fn ask_user(state: &mut [char], player: char) {
 
             if state[number - 1] == 'O' ||
                state[number - 1] == 'X' {
-                println!("This number was already taken by: {}.", state[number - 1]);
+                println!("This number was already taken by: '{}'.", state[number - 1]);
                 continue;
             }
 

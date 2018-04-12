@@ -18,7 +18,7 @@ fn draw(state: &[char]) {
 
 fn ask_user(state: &mut [char], player: char) {
     loop {
-        println!("Player {} enter a number: ", player);
+        println!("Player '{}', enter a number: ", player);
 
         let mut input = String::new();
 
@@ -34,13 +34,15 @@ fn ask_user(state: &mut [char], player: char) {
                 continue;
             }
 
-            if state[number - 1] == 'O' ||
-               state[number - 1] == 'X' {
-                println!("This number was already taken by: '{}'.", state[number - 1]);
+            let number = number - 1;
+
+            if state[number] == 'O' ||
+               state[number] == 'X' {
+                println!("This number was already taken by '{}'.", state[number]);
                 continue;
             }
 
-            state[number - 1] = player;
+            state[number] = player;
 
             break;
         } else {

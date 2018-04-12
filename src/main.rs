@@ -76,6 +76,7 @@ fn has_won(state: &[char]) -> bool {
     false
 }
 
+#[inline(always)]
 fn is_over(state: &[char]) -> bool {
     !state.iter().any(|&x| x != 'X' && x != 'O')
 }

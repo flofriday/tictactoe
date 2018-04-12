@@ -38,7 +38,7 @@ fn ask_user(state: &mut [char], player: char) {
 
             if state[number] == 'O' ||
                state[number] == 'X' {
-                println!("This number was already taken by '{}'.", state[number]);
+                println!("This number is already taken by '{}'.", state[number]);
                 continue;
             }
 
@@ -77,13 +77,7 @@ fn has_won(state: &[char]) -> bool {
 }
 
 fn is_over(state: &[char]) -> bool {
-    for element in state {
-        if *element != 'X' && *element != 'O' {
-            return false;
-        }
-    }
-
-    true
+    !state.iter().any(|&x| x != 'X' && x != 'O')
 }
 
 fn main() {

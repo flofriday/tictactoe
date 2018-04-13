@@ -1,111 +1,112 @@
-use std::io;
-
 fn draw(state: &[char]) {
-    println!("\n\n");
+    println!("\n");
 
     for i in 0..3 {
         let offset = i * 3;
+
         println!("-------------");
-        println!("| {} | {} | {} |", state[0 + offset], state[1 + offset],
-                 state[2 + offset]);
+        println!(
+            "| {} | {} | {} |",
+            state[offset],
+            state[offset + 1],
+            state[offset + 2]
+        );
     }
+
     println!("-------------");
 }
 
 fn ask_user(state: &mut [char], player: char) {
-        loop {
-            println!("Player {} enter a number: ", player);
+    loop {
+        println!("Player '{}', enter a number: ", player);
 
-            let mut input = String::new();
+        let mut input = String::new();
 
-            io::stdin().read_line(&mut input)
-                .expect("Failed to read line");
-
-            let number: usize = match input.trim().parse() {
-                Ok(num) => num,
-                Err(_) => {
-                    println!("Only numbers are allowed!");
-                    continue;
-                }
-            };
-
-            if number < 1 && number > 9 {
-                println!("The number musst be between 1 and 9");
-                continue;
-            }
-
-            if state[number - 1] == 'O' || state[number - 1] == 'X' {
-                println!("This Number was allready taken by: {}", state[number - 1]);
-                continue;
-            }
-
-            state[number - 1] = player;
-            break;
+        if std::io::stdin().read_line(&mut input).is_err() {
+            println!("Couldn't read line! Try again.");
+            continue;
         }
+
+        if let Ok(number) = input.trim().parse::<usize>() {
+            if number < 1 &&
+               number > 9 {
+                println!("The field number must be between 1 and 9.");
+                continue;
+            }
+
+            let number = number - 1;
+
+            if state[number] == 'X' ||
+               state[number] == 'O' {
+                println!("This field is already taken by '{}'.", state[number]);
+                continue;
+            }
+
+            state[number] = player;
+
+            break;
+        } else {
+            println!("Only numbers are allowed.");
+            continue;
+        }
+    }
 }
 
 fn has_won(state: &[char]) -> bool {
-        for tmp in 0..3 {
-            if state[0 + tmp] == state[3 + tmp] && 
-                state[0 + tmp] == state[6 + tmp]{
-                    return true;
-                }
-            if state[0 + tmp * 3] == state[1 + tmp * 3] && 
-                state[0 + tmp * 3] == state[2 + tmp * 3]{
-                    return true;
-                }
+    for tmp in 0..3 {
+        if state[tmp] == state[tmp + 3] &&
+           state[tmp] == state[tmp + 6] {
+            return true;
         }
 
-        if (state[0] == state[4] && state[0] == state[8]) ||
-            (state[2] == state[4] && state[2] == state[6]) {
-                return true;
-            }
+        let tmp = tmp * 3;
 
-        false
-}
-
-fn is_over(state: &[char]) -> bool {
-    for element in state.iter() {
-        if element != &'X' && element != &'O' {
-            return false;
+        if state[tmp] == state[tmp + 1] &&
+           state[tmp] == state[tmp + 2] {
+            return true;
         }
     }
 
-    true
+    if (state[0] == state[4] && state[0] == state[8]) ||
+       (state[2] == state[4] && state[2] == state[6])
+    {
+        return true;
+    }
+
+    false
+}
+
+#[inline(always)]
+fn is_over(state: &[char]) -> bool {
+    state.iter().all(|&v| v == 'X' || v == 'O')
 }
 
 fn main() {
     let mut state = ['1', '2', '3', '4', '5', '6', '7', '8', '9'];
-    let mut player : char = 'X';
+    let mut player = 'X';
 
     loop {
-
         // Draw the field
         draw(&state);
 
-        // Ask for User input
+        // Ask for user input
         ask_user(&mut state, player);
 
         // Check if a player won
-        if has_won(&state) == true {
+        if has_won(&state) {
             draw(&state);
-            println!("Player {} won! \\(^.^)/", player);
-            return;
+            println!("Player '{}' won! \\(^.^)/", player);
+            break;
         }
 
         // Check if all fields are used
-        if is_over(&state) == true {
+        if is_over(&state) {
             draw(&state);
-            println!("All fields are used. Noone won!");
-            return;
+            println!("All fields are used. No one won.");
+            break;
         }
 
-        // Set to next player
-        if player == 'X' {
-            player = 'O';
-        } else {
-            player = 'X';
-        }
-
+        // Switch player
+        player = if player == 'X' { 'O' } else { 'X' }
     }
 }

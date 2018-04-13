@@ -28,7 +28,7 @@ fn ask_user(state: &mut [char], player: char) {
         }
 
         if let Ok(number) = input.trim().parse::<usize>() {
-            if number < 1 &&
+            if number < 1 ||
                number > 9 {
                 println!("The field number must be between 1 and 9.");
                 continue;
@@ -68,8 +68,7 @@ fn has_won(state: &[char]) -> bool {
     }
 
     if (state[0] == state[4] && state[0] == state[8]) ||
-       (state[2] == state[4] && state[2] == state[6])
-    {
+       (state[2] == state[4] && state[2] == state[6]) {
         return true;
     }
 

@@ -1,12 +1,19 @@
+fn greeting() {
+    println!("\nRust TicTacToe\n\
+             --------------\n\
+             A simple game written in the rust programming language.\n\
+             Code is available at: https://github.com/flofriday/tictactoe")
+}
+
 fn draw(state: &[char]) {
     println!("\n");
 
     for i in 0..3 {
         let offset = i * 3;
 
-        println!("-------------");
         println!(
-            "| {} | {} | {} |",
+            "-------------\n\
+            | {} | {} | {} |",
             state[offset],
             state[offset + 1],
             state[offset + 2]
@@ -80,6 +87,8 @@ fn is_over(state: &[char]) -> bool {
 fn main() {
     let mut state = ['1', '2', '3', '4', '5', '6', '7', '8', '9'];
     let mut player = 'X';
+
+    greeting();
 
     loop {
         // Draw the field

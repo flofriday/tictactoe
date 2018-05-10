@@ -5,6 +5,19 @@ fn greeting() {
              Code is available at: https://github.com/flofriday/tictactoe")
 }
 
+fn fmt_player(player: &char) -> String {
+    let mut out = String::new();
+    if player == &'X' {
+        out = "\x1b[34mX\x1b[0m".to_string();
+    } else if player == &'O' {
+        out = "\x1b[32mO\x1b[0m".to_string();
+    } else {
+        out = player.to_string();
+    }
+
+    out
+}
+
 fn draw(state: &[char]) {
     println!("\n");
 
@@ -14,9 +27,9 @@ fn draw(state: &[char]) {
         println!(
             "-------------\n\
             | {} | {} | {} |",
-            state[offset],
-            state[offset + 1],
-            state[offset + 2]
+            fmt_player(&state[offset]),
+            fmt_player(&state[offset + 1]),
+            fmt_player(&state[offset + 2])
         );
     }
 
@@ -25,10 +38,9 @@ fn draw(state: &[char]) {
 
 fn ask_user(state: &mut [char], player: char) {
     loop {
-        println!("Player '{}', enter a number: ", player);
+        println!("Player '{}', enter a number: ", fmt_player(&player));
 
         let mut input = String::new();
-
         if std::io::stdin().read_line(&mut input).is_err() {
             println!("Couldn't read line! Try again.");
             continue;
@@ -43,7 +55,8 @@ fn ask_user(state: &mut [char], player: char) {
             let number = number - 1;
 
             if state[number] == 'X' || state[number] == 'O' {
-                println!("This field is already taken by '{}'.", state[number]);
+                println!("This field is already taken by '{}'.",
+                         fmt_player(&state[number]));
                 continue;
             }
 
@@ -100,14 +113,14 @@ fn main() {
         // Check if a player won
         if has_won(&state) {
             draw(&state);
-            println!("Player '{}' won! \\(^.^)/", player);
+            println!("Player '{}' won! \\(^.^)/", fmt_player(&player));
             break;
         }
 
         // Check if all fields are used
         if is_over(&state) {
             draw(&state);
-            println!("All fields are used. No one won.");
+            println!("All fields are used. No one won. (._.)");
             break;
         }
 

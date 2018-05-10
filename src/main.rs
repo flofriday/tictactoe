@@ -1,8 +1,10 @@
 fn greeting() {
-    println!("\nRust TicTacToe\n\
-             --------------\n\
-             A simple game written in the rust programming language.\n\
-             Code is available at: https://github.com/flofriday/tictactoe")
+    println!(
+        "\nRust TicTacToe\n\
+         --------------\n\
+         A simple game written in the rust programming language.\n\
+         Code is available at: https://github.com/flofriday/tictactoe"
+    )
 }
 
 fn fmt_player(player: &char) -> String {
@@ -26,7 +28,7 @@ fn draw(state: &[char]) {
 
         println!(
             "-------------\n\
-            | {} | {} | {} |",
+             | {} | {} | {} |",
             fmt_player(&state[offset]),
             fmt_player(&state[offset + 1]),
             fmt_player(&state[offset + 2])
@@ -55,8 +57,10 @@ fn ask_user(state: &mut [char], player: char) {
             let number = number - 1;
 
             if state[number] == 'X' || state[number] == 'O' {
-                println!("This field is already taken by '{}'.",
-                         fmt_player(&state[number]));
+                println!(
+                    "This field is already taken by '{}'.",
+                    fmt_player(&state[number])
+                );
                 continue;
             }
 

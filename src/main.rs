@@ -28,16 +28,14 @@ fn ask_user(state: &mut [char], player: char) {
         }
 
         if let Ok(number) = input.trim().parse::<usize>() {
-            if number < 1 ||
-               number > 9 {
+            if number < 1 || number > 9 {
                 println!("The field number must be between 1 and 9.");
                 continue;
             }
 
             let number = number - 1;
 
-            if state[number] == 'X' ||
-               state[number] == 'O' {
+            if state[number] == 'X' || state[number] == 'O' {
                 println!("This field is already taken by '{}'.", state[number]);
                 continue;
             }
@@ -54,21 +52,20 @@ fn ask_user(state: &mut [char], player: char) {
 
 fn has_won(state: &[char]) -> bool {
     for tmp in 0..3 {
-        if state[tmp] == state[tmp + 3] &&
-           state[tmp] == state[tmp + 6] {
+        if state[tmp] == state[tmp + 3] && state[tmp] == state[tmp + 6] {
             return true;
         }
 
         let tmp = tmp * 3;
 
-        if state[tmp] == state[tmp + 1] &&
-           state[tmp] == state[tmp + 2] {
+        if state[tmp] == state[tmp + 1] && state[tmp] == state[tmp + 2] {
             return true;
         }
     }
 
-    if (state[0] == state[4] && state[0] == state[8]) ||
-       (state[2] == state[4] && state[2] == state[6]) {
+    if (state[0] == state[4] && state[0] == state[8])
+        || (state[2] == state[4] && state[2] == state[6])
+    {
         return true;
     }
 

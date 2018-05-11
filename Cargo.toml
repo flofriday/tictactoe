@@ -1,6 +1,6 @@
 [package]
 name = "tictactoe"
-version = "0.1.0"
+version = "0.2.0"
 authors = ["flofriday <flohacksfriday@gmail.com>"]
 
 [dependencies]

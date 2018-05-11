@@ -8,16 +8,13 @@ fn greeting() {
 }
 
 fn fmt_player(player: &char) -> String {
-    let mut out = String::new();
     if player == &'X' {
-        out = "\x1b[34mX\x1b[0m".to_string();
+        return "\x1b[34mX\x1b[0m".to_string();
     } else if player == &'O' {
-        out = "\x1b[32mO\x1b[0m".to_string();
+        return "\x1b[32mO\x1b[0m".to_string();
     } else {
-        out = player.to_string();
+        return player.to_string();
     }
-
-    out
 }
 
 fn draw(state: &[char]) {

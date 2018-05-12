@@ -20,7 +20,7 @@ fn fmt_player(player: &char) -> String {
 fn draw(state: &[char]) {
     println!("\n");
 
-    for i in 0..3 {
+    for i in (0..3).rev() {
         let offset = i * 3;
 
         println!(

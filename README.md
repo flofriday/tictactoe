@@ -17,6 +17,3 @@ singed. Feel free to ignore those warnings.
 1. [Download](https://github.com/flofriday/tictactoe/archive/master.zip) the .zip or clone the project with git
 2. [Install rust](https://www.rust-lang.org/en-US/install.html), if you have not already
 3. Run `cargo run --release`
-
-## Todo
-* Maybe livedemo in webbrowser ?

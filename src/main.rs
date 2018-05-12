@@ -7,6 +7,7 @@ fn greeting() {
     )
 }
 
+#[cfg(target_os = "unix")]
 fn fmt_player(player: &char) -> String {
     if player == &'X' {
         return "\x1b[34mX\x1b[0m".to_string();
@@ -15,6 +16,11 @@ fn fmt_player(player: &char) -> String {
     } else {
         return player.to_string();
     }
+}
+
+#[cfg(not(target_os = "unix"))]
+fn fmt_player(player: &char) -> String {
+    return player.to_string();
 }
 
 fn draw(state: &[char]) {

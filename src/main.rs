@@ -7,7 +7,7 @@ fn greeting() {
     )
 }
 
-#[cfg(target_os = "unix")]
+#[cfg(not(target_os = "windows"))]
 fn fmt_player(player: &char) -> String {
     if player == &'X' {
         return "\x1b[34mX\x1b[0m".to_string();
@@ -18,7 +18,7 @@ fn fmt_player(player: &char) -> String {
     }
 }
 
-#[cfg(not(target_os = "unix"))]
+#[cfg(target_os = "windows")]
 fn fmt_player(player: &char) -> String {
     return player.to_string();
 }

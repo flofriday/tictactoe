@@ -1,3 +1,8 @@
+extern crate termcolor;
+
+use std::io::Write;
+use termcolor::{Color, ColorChoice, ColorSpec, StandardStream, WriteColor};
+
 fn greeting() {
     println!(
         "\nRust TicTacToe\n\
@@ -7,20 +12,21 @@ fn greeting() {
     )
 }
 
-#[cfg(not(target_os = "windows"))]
-fn fmt_player(player: &char) -> String {
-    if player == &'X' {
-        return "\x1b[34mX\x1b[0m".to_string();
-    } else if player == &'O' {
-        return "\x1b[32mO\x1b[0m".to_string();
-    } else {
-        return player.to_string();
-    }
-}
+fn print_player(player: &char) {
+    let mut stdout = StandardStream::stdout(ColorChoice::Always);
 
-#[cfg(target_os = "windows")]
-fn fmt_player(player: &char) -> String {
-    return player.to_string();
+    if player == &'X' {
+        stdout
+            .set_color(ColorSpec::new().set_fg(Some(Color::Blue)))
+            .unwrap();
+    } else if player == &'O' {
+        stdout
+            .set_color(ColorSpec::new().set_fg(Some(Color::Green)))
+            .unwrap();
+    }
+
+    write!(&mut stdout, "{}", player).unwrap();
+    stdout.reset().unwrap();
 }
 
 fn draw(state: &[char]) {
@@ -29,13 +35,13 @@ fn draw(state: &[char]) {
     for i in (0..3).rev() {
         let offset = i * 3;
 
-        println!(
-            "-------------\n\
-             | {} | {} | {} |",
-            fmt_player(&state[offset]),
-            fmt_player(&state[offset + 1]),
-            fmt_player(&state[offset + 2])
-        );
+        print!("-------------\n| ");
+        print_player(&state[offset]);
+        print!(" | ");
+        print_player(&state[offset + 1]);
+        print!(" | ");
+        print_player(&state[offset + 2]);
+        println!(" |");
     }
 
     println!("-------------");
@@ -43,7 +49,9 @@ fn draw(state: &[char]) {
 
 fn ask_user(state: &mut [char], player: char) {
     loop {
-        println!("Player '{}', enter a number: ", fmt_player(&player));
+        print!("Player '");
+        print_player(&player);
+        println!("', enter a number: ");
 
         let mut input = String::new();
         if std::io::stdin().read_line(&mut input).is_err() {
@@ -60,10 +68,9 @@ fn ask_user(state: &mut [char], player: char) {
             let number = number - 1;
 
             if state[number] == 'X' || state[number] == 'O' {
-                println!(
-                    "This field is already taken by '{}'.",
-                    fmt_player(&state[number])
-                );
+                print!("This field is already taken by '");
+                print_player(&state[number]);
+                println!("'.");
                 continue;
             }
 
@@ -121,7 +128,9 @@ fn main() {
         // Check if a player won
         if has_won(&state) {
             draw(&state);
-            println!("Player '{}' won! \\(^.^)/", fmt_player(&player));
+            print!("Player '");
+            print_player(&player);
+            println!("' won! \\(^.^)/");
             break;
         }
 

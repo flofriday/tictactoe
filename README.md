@@ -6,6 +6,9 @@ good practice. This is is my first rust project, so if you have any suggestions
 on how to improve the code feel free to write an issue. Maybe one day this code 
 will become a showcase.
 
+## Updates
+- Added AI player which playe super defensive and is unbeatable. It will either Draw the game or Win by abusing your mistakes. 
+
 ## Install
 Go to the [latest release](https://github.com/flofriday/tictactoe/releases) and install the right binary for your system.
 

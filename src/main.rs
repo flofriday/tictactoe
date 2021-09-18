@@ -111,35 +111,155 @@ fn random_corner(state: &[char], corners_idx: &[usize; 4]) -> Option<usize> {
     None
 }
 
-fn ai_move(state: &[char], turn: usize) -> usize {
+fn play_side(state: &[char], side_idx: &[usize; 4], player: &char) -> Option<usize> {
+    let opponent;
+    if *player == 'O' {
+        opponent = 'X';
+    } else {
+        opponent = 'O';
+    }
+    for side in side_idx {
+        if state[*side] != 'O' && state[*side] != 'X' {
+            match side {
+                1 => {
+                    if state[7] != opponent {
+                        return Some(*side);
+                    }
+                }
+                3 => {
+                    if state[5] != opponent {
+                        return Some(*side);
+                    }
+                }
+                5 => {
+                    if state[3] != opponent {
+                        return Some(*side);
+                    }
+                }
+                7 => {
+                    if state[1] != opponent {
+                        return Some(*side);
+                    }
+                }
+                _ => continue,
+            }
+        }
+    }
+    None
+}
+
+fn check_win(state: &[char], player: char) -> Option<usize> {
+    let opponent;
+    if player == 'O' {
+        opponent = 'X';
+    } else {
+        opponent = 'O';
+    }
+    for tmp in 0..3 {
+        for x in [0, 3, 6].iter() {
+            if state[tmp + ((3 + x) % 9)] == player && state[tmp + x] == player {
+                if state[tmp + ((6 + x) % 9)] != opponent {
+                    return Some(tmp + ((6 + x) % 9));
+                }
+            }
+        }
+
+        let tmp = tmp * 3;
+
+        for x in [0, 1, 2].iter() {
+            if state[tmp + ((x + 1) % 3)] == player && state[tmp + x] == player {
+                if state[tmp + ((x + 2) % 3)] != opponent {
+                    return Some(tmp + ((x + 2) % 3));
+                }
+            }
+        }
+    }
+
+    if state[0] == state[4] || state[0] == state[8] || state[4] == state[8] {
+        for idx in [0 as usize, 4, 8].iter() {
+            if state[*idx] == player && state[(*idx + 4) % 12] == player {
+                if state[(*idx + 8) % 12] != opponent {
+                    return Some((*idx + 8) % 12);
+                }
+            }
+        }
+    }
+
+    if state[2] == state[4] || state[2] == state[6] || state[4] == state[6] {
+        for idx in [2 as usize, 4, 6].iter() {
+            match *idx {
+                2 => {
+                    if state[*idx] == player && state[(*idx + 2) % 6] == player {
+                        if state[*idx + 4] != opponent {
+                            return Some(*idx + 4);
+                        }
+                    }
+                }
+                4 => {
+                    if state[*idx] == player && state[*idx + 2] == player {
+                        if state[*idx - 2] != opponent {
+                            return Some(*idx - 2);
+                        }
+                    }
+                }
+                6 => {
+                    if state[*idx] == player && state[(*idx + 2) % 6] == player {
+                        if state[*idx - 2] != opponent {
+                            return Some(*idx - 2);
+                        }
+                    }
+                }
+                _ => continue,
+            }
+        }
+    }
+
+    None
+}
+
+fn ai_move(state: &mut [char], turn: usize, player: char) {
     let corners = ['1', '3', '7', '9'];
     let corners_idx = [0, 2, 6, 8];
+    let side_idx = [1, 3, 5, 7];
     //We assign higher priority to corners
-    match turn {
+    let index = match turn {
         1 => match random_corner(state, &corners_idx) {
             Some(x) => x,
             None => random_move(state),
         },
         2 => {
+            let mut play_center = false;
             for (idx, targets) in corners_idx.iter().enumerate() {
                 //Check if player played a corner
                 if state[*targets] != corners[idx] {
-                    return 4;
+                    play_center = true;
+                    break;
                 }
             }
-            match random_corner(state, &corners_idx) {
-                Some(x) => x,
-                None => random_move(state),
+            if play_center {
+                4
+            } else {
+                match random_corner(state, &corners_idx) {
+                    Some(x) => x,
+                    None => random_move(state),
+                }
             }
         }
-        _ => match block_move(state) {
-            None => match random_corner(state, &corners_idx) {
-                Some(x) => x,
-                None => random_move(state),
-            },
-            Some(x) => x,
-        },
-    }
+        _ => {
+            if let Some(step) = check_win(state, player) {
+                step
+            } else {
+                match block_move(state) {
+                    None => match play_side(state, &side_idx, &player) {
+                        Some(x) => x,
+                        None => random_move(state),
+                    },
+                    Some(x) => x,
+                }
+            }
+        } // Check if winning is possible in one move, If yes then execute.
+    };
+    state[index] = player;
 }
 
 fn ask_user(state: &mut [char], player: char) {
@@ -239,7 +359,7 @@ fn main() {
             user_move = false;
         } else {
             println!("AI made the Move 🤖");
-            state[ai_move(&state, turn)] = ai_player;
+            ai_move(&mut state, turn, ai_player);
             user_move = true;
         }
 
